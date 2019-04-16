@@ -1,0 +1,7 @@
+package com.example.inventoryapp.repositories.documents;
+
+import com.arangodb.springframework.repository.ArangoRepository;
+import com.example.inventoryapp.domain.documents.SubInterface;
+
+public interface SubInterfaceRepository extends ArangoRepository<SubInterface, String> {
+}

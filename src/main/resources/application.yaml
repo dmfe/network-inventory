@@ -1,0 +1,6 @@
+arango:
+  db-host: 127.0.0.1
+  db-port: 8529
+  db-name: ni-db-1
+  user-name: root
+  password: root
