@@ -1,5 +1,7 @@
 package com.example.inventoryapp.domain.documents;
 
+import static com.example.inventoryapp.domain.Collections.INTERFACE;
+
 import com.arangodb.springframework.annotation.Document;
 import com.arangodb.springframework.annotation.Field;
 import com.arangodb.springframework.annotation.Relations;
@@ -12,9 +14,9 @@ import org.springframework.data.annotation.Id;
 import java.util.List;
 import java.util.Set;
 
-@Document("interface")
+@Document(INTERFACE)
 @Data
-public class Interface {
+public class Interface implements DocumentEntity {
 
     @Id
     private String id;

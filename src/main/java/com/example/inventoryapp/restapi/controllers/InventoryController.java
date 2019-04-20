@@ -1,56 +1,82 @@
 package com.example.inventoryapp.restapi.controllers;
 
 import com.example.inventoryapp.domain.documents.HardwareComponent;
+import com.example.inventoryapp.domain.documents.Interface;
 import com.example.inventoryapp.domain.documents.NetworkElement;
-import com.example.inventoryapp.domain.edges.NeToHw;
-import com.example.inventoryapp.exceptions.ObjectNotFoundException;
-import com.example.inventoryapp.repositories.documents.HardwareComponentRepository;
-import com.example.inventoryapp.repositories.documents.NetworkElementRepository;
-import com.example.inventoryapp.repositories.edges.NeToHwRepository;
+import com.example.inventoryapp.domain.documents.SubInterface;
+import com.example.inventoryapp.domain.edges.Link;
+import com.example.inventoryapp.services.api.InventoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
-    private final NetworkElementRepository networkElementRepository;
-    private final HardwareComponentRepository hardwareComponentRepository;
-    private final NeToHwRepository neToHwRepository;
+    private final InventoryService inventoryService;
 
     @GetMapping("/network-elements")
-    public Iterable<NetworkElement> getNetworkElements() {
-        return networkElementRepository.findAll();
+    public List<NetworkElement> getNetworkElements() {
+        return inventoryService.getNetworkElements();
     }
 
     @PostMapping("/network-elements")
+    @ResponseStatus(HttpStatus.CREATED)
     public NetworkElement storeNetworkElement(@RequestBody NetworkElement networkElement) {
-        return networkElementRepository.save(networkElement);
+        return inventoryService.storeNetworkElement(networkElement);
     }
 
-    @PostMapping("/network-elements/{id}/hw-components")
-    public HardwareComponent storeHardwareComponent(@PathVariable String id,
+    @GetMapping("/hw-components/{id}")
+    public HardwareComponent storeHardwareComponent(@PathVariable("id") String neId) {
+        return inventoryService.getHardwareComponent(neId);
+    }
+
+    @PostMapping("/hw-components/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public HardwareComponent storeHardwareComponent(@PathVariable("id") String neId,
                                                     @RequestBody HardwareComponent hwComponent) {
+        return inventoryService.storeHardwareComponent(neId, hwComponent);
+    }
 
-        NetworkElement networkElement = networkElementRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException("Unable to find network element with id: " + id));
+    @GetMapping("/interfaces/{id}")
+    public List<Interface> getInterfaces(@PathVariable("id") String neId) {
+        return inventoryService.getInterfaces(neId);
+    }
 
-        if (networkElement.getHardwareComponent() != null) {
-            throw new IllegalStateException("Network element with id: " + id + " already has assigned hardware");
-        }
+    @PostMapping("/interfaces/{id}")
+    public Interface storeInterface(@PathVariable("id") String neId,
+                                    @RequestBody Interface inter) {
+        return inventoryService.storeInterface(neId, inter);
+    }
 
-        HardwareComponent hardwareComponent = hardwareComponentRepository.save(hwComponent);
+    @GetMapping("sub-interfaces/{id}")
+    public List<SubInterface> getSubInterfaces(@PathVariable("id") String interId) {
+        return inventoryService.getSubInterfaces(interId);
+    }
 
-        NeToHw neToHw = new NeToHw(networkElement, hardwareComponent);
+    @PostMapping("sub-interfaces/{id}")
+    public SubInterface storeSubInterface(@PathVariable("id") String interId,
+                                          @RequestBody SubInterface subInterface) {
+        return inventoryService.storeSubInterface(interId, subInterface);
+    }
 
-        neToHwRepository.save(neToHw);
+    @GetMapping("/links/{id}")
+    public List<Link> getLinks(@PathVariable("id") String neId) {
+        return inventoryService.getLinks(neId);
+    }
 
-        return hardwareComponent;
+    @PostMapping("/links")
+    public Link storeLink(@RequestBody Link link) {
+        return inventoryService.storeLink(link);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.inventoryapp.domain.documents;
 
+import static com.example.inventoryapp.domain.Collections.NETWORK_ELEMENT;
+
 import com.arangodb.springframework.annotation.Document;
 import com.arangodb.springframework.annotation.Field;
 import com.arangodb.springframework.annotation.Relations;
@@ -12,9 +14,9 @@ import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
-@Document("network-element")
+@Document(NETWORK_ELEMENT)
 @Data
-public class NetworkElement {
+public class NetworkElement implements DocumentEntity {
 
     @Id
     private String id;

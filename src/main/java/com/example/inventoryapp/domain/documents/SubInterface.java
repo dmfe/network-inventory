@@ -1,14 +1,16 @@
 package com.example.inventoryapp.domain.documents;
 
+import static com.example.inventoryapp.domain.Collections.SUB_INTERFACE;
+
 import com.arangodb.springframework.annotation.Document;
 import com.arangodb.springframework.annotation.Field;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-@Document("sub-interface")
+@Document(SUB_INTERFACE)
 @Data
-public class SubInterface {
+public class SubInterface implements DocumentEntity {
 
     @Id
     private String id;
